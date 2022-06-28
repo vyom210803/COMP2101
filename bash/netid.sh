@@ -22,15 +22,15 @@
 
 while [ $# -gt 0 ]; do
 	[ "$verbose" = "yes" ] && echo Information of Command line to verbose from $#
-	[ "$verbose" = "yes" ] && echo "There is '$cv' verbose in command line"
-case "$cv" in
+	[ "$verbose" = "yes" ] && echo "There is $1 verbose in command line"
+case "$1" in
 	-v )
-		[ "$verbose" = "yes" ] 
+		[ "$option" = "yes" ] 
 		echo 'There is an option in command line'
 		exit 1
 		;;
 	[a-z])
-if [ "$verbose" = "yes" ]; then
+		if [ "$option" = "yes" ]; then
                         echo 'You have used -v options'
                         exit 1
                 else
@@ -40,7 +40,7 @@ if [ "$verbose" = "yes" ]; then
                 fi
                 ;;
 	[A-Z])
-		if [ "$verbose" = "yes" ]; then
+		if [ "$option" = "yes" ]; then
                         echo 'You have used -v options'
                         exit 1
                 else
@@ -50,7 +50,7 @@ if [ "$verbose" = "yes" ]; then
                 fi
                 ;;
 	[0-9])
-		if [ "$verbose" = "yes" ]; then
+		if [ "$option" = "yes" ]; then
                         echo 'You have used -v options'
                         exit 1
                 else
@@ -59,6 +59,19 @@ if [ "$verbose" = "yes" ]; then
                         exit 1
                 fi
                 ;;
+	list )
+		if [ "$option" = "yes" ]; then
+			exit
+		else
+			for i in $(ip a | awk '/: /{print $2}'); do
+			echo "$i"
+		done
+		fi
+		;;
+	*)
+		echo 'Sorry! Something get wrong'
+		exit
+		;;
 esac
 shift
 done
