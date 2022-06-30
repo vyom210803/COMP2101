@@ -15,25 +15,31 @@
 # Usage:
 #   error-message ["some text to print to stderr"]
 function error-message {
-echo "Hello World" 2> /dev/stderr
-}
 
-echo "$error-message The output of command line goes diractly in stderr"
+	local ia=$(ip a s enp0s3 | awk '/inet /{print$2}')
+
+echo "${ia}: ${Oops! Something get wrong}"  2> /dev/stderr
+}
 
 # This function will send a message to stderr and exit with a failure status
 # Usage:
 #   error-exit ["some text to print to stderr" [exit-status]]
 function error-exit {
-echo "Hello Everyone" 2> /dev/stderr
+
+error-message "$1"
+exit "${2:-1}"
 }
 
-echo "$error-exit It will send output of command line to stderr and Exit-status is $? "
 
 #This function displays help information if the user asks for it on the command line or gives us a bad command line
 function displayhelp() {
-echo "Help: you have written wrong command line"
+echo "Help:$0 [-h | --help]"
 echo "scripts execution ends"
 exit 0
+}
+
+function error {
+echo "$@" >&2
 }
 
 trap displayhelp 15
@@ -44,13 +50,14 @@ case "$1" in
 
         -h|--help)
                 displayhelp
-                error-exit
-                ;;
+                exit 0
+              	;;
 
-        *)
-                "displayhelp" = "yes"
-                error-exit
-                ;;
+	*)
+		error "Sorry! Try again."
+		error "$(displayhelp)"
+		exit 1
+		;;
 
 esac
 shift
