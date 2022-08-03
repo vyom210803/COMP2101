@@ -1,0 +1,1 @@
+Get-CimInstance Win32_NetworkAdapterConfiguration | select-object description, ipenabled, index, ipaddress, subnetmask, dnsdomain, dnsserver* | where { $_.ipenabled -eq $true } | format-table -wrap
